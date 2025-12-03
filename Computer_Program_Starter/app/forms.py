@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, TextAreaField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 import re
 from flask_login import current_user
-from Computer_Program_Starter.app.models import User
+from app.models import User
 
 passwordBlacklist = {"Password123$", "Qwerty123!", "Adminadmin1@", "weLcome123!"}
 
@@ -42,15 +42,16 @@ def password_validator(form, field):
             raise ValidationError("Password Must Not Contain Your Username Or Email.")
 
 class RegistrationForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired(), Email(), Length(max=254)])
+    email = StringField("Email", validators=[DataRequired(), Email(), Length(max=254)])
     password = PasswordField("Password", validators=[DataRequired(), password_validator])
     password2 = PasswordField("Repeat Password", validators=[DataRequired(), EqualTo('password')])
-    biography = TextAreaField("Biography", validators=[DataRequired(), Length(max=500)])
+    bio = TextAreaField("Biography", validators=[DataRequired(), Length(max=500)])
     submit = SubmitField("Register")
 
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user is not None:
+    def validate_email(self, field):
+        # The application stores emails in the `username` column on the User model
+        existing = User.query.filter_by(username=field.data).first()
+        if existing is not None:
             raise ValidationError('Please Use A Different Email Address.')
         
 class LoginForm(FlaskForm):

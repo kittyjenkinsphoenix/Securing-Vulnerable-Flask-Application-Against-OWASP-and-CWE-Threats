@@ -13,7 +13,7 @@ from app import db
 from datetime import datetime, timedelta, timezone
 from app.models import User
 from app import logging
-from Computer_Program_Starter.app.forms import RegistrationForm, LoginForm, ChangePasswordForm
+from app.forms import RegistrationForm, LoginForm, ChangePasswordForm
 
 main = Blueprint("main", __name__)
 
@@ -82,9 +82,10 @@ def register():
     if form.validate_on_submit():
         allowed_tags = ["b", "i", "u", "em", "strong", "a", "p", "ul", "ol", "li", "br"]
         allowed_attrs = {"a": ["href", "title"]}
-        clean_bio = bleach.clean(form.biography.data or "", tags=allowed_tags, attributes=allowed_attrs)
+        clean_bio = bleach.clean(form.bio.data or "", tags=allowed_tags, attributes=allowed_attrs)
 
-        user = User(username=form.username.data, password=form.password.data, role='user', bio=clean_bio)
+        # The application uses the username column to store the user's email address
+        user = User(username=form.email.data, password=form.password.data, role='user', bio=clean_bio)
         db.session.add(user)
         try:
             db.session.commit()
@@ -165,3 +166,6 @@ def not_found(error):
     return render_template('404.html', error=error), 404
 
 @main.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html', error=error), 500

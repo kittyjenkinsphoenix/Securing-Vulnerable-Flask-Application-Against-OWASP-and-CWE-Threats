@@ -10,7 +10,7 @@
     {% endif %}
     {% endwith %}
 	<h1 style="color:red">Login</h1>
-    <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
+    <p>New User? <a href="{{ url_for('main.register') }}">Click to Register!</a></p>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -27,7 +27,6 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit() }}</p>
     </form>
 </center>
