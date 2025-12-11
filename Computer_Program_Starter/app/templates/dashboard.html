@@ -3,7 +3,6 @@
 {% block content %}
 <h1>Welcome, {{ username }}!</h1>
 
-<!-- Flash messages -->
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
 {% for category, message in messages %}
@@ -13,7 +12,7 @@
 {% endwith %}
 
 <p>This is your dashboard.</p>
-<p><b>Bio:</b> {{bio}}</p>
+<p><b>Bio:</b> {{bio}} | safe </p>
 
 <button id="greet-btn" class="btn btn-success" data-username="{{ username }}">
     Greet Me
